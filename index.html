@@ -237,10 +237,9 @@ const backgrounds = [
 ];
 
 const crt = document.getElementById("crt");
-const audio = document.getElementById("biosSound");
 const logo = document.getElementById("floatingLogo");
+const audio = document.getElementById("biosSound");
 
-let finished = false;
 let taps = 0;
 let lastTap = 0;
 let locked = false;
@@ -253,9 +252,9 @@ function randomBg() {
 randomBg();
 setInterval(randomBg, 6000);
 
-function playSound(vol) {
+function triggerSound() {
     audio.currentTime = 0;
-    audio.volume = vol;
+    audio.volume = 1.0;
     audio.play().catch(() => {});
 }
 
@@ -265,9 +264,7 @@ function glitchMode() {
     locked = true;
     crt.classList.add("glitch");
 
-    audio.currentTime = 0;
-    audio.volume = 1.0;
-    audio.play().catch(() => {});
+    triggerSound();
 
     setTimeout(() => {
         crt.classList.remove("glitch");
@@ -276,15 +273,17 @@ function glitchMode() {
     }, 1500);
 }
 
-function registerTap() {
+function handleTap() {
+    if (locked) return;
+
     const now = Date.now();
 
-    if (now - lastTap > 1200) taps = 0;
+    if (now - lastTap > 1200) {
+        taps = 0;
+    }
 
     lastTap = now;
     taps++;
-
-    playSound(0.2 + taps * 0.25);
 
     if (taps >= 3) {
         glitchMode();
@@ -293,7 +292,7 @@ function registerTap() {
 
 logo.addEventListener("pointerdown", (e) => {
     e.preventDefault();
-    registerTap();
+    handleTap();
 });
 
 const targetDate = new Date(2026, 10, 12, 0, 0, 0);
@@ -302,12 +301,7 @@ function update() {
     const now = new Date();
     const diff = targetDate - now;
 
-    if (diff <= 0 && !finished) {
-        finished = true;
-        audio.volume = 1.0;
-        audio.play().catch(() => {});
-        return;
-    }
+    if (diff <= 0) return;
 
     const s = Math.floor(diff / 1000);
     const d = Math.floor(s / 86400);
