@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEO GEO AES+ COUNTDOWN</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --gold: #ead27d;
+    --blue: #00d9ff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: black;
+    font-family: 'Orbitron', sans-serif;
+    color: white;
+}
+
+.crt {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+    transition: background-image 1.2s ease-in-out;
+}
+
+.crt::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 58%, rgba(0,0,0,0.6) 100%);
+    z-index: 10;
+}
+
+.crt::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.03) 0px,
+        rgba(255,255,255,0.03) 1px,
+        transparent 2px,
+        transparent 4px
+    );
+    z-index: 11;
+}
+
+.floating-logo {
+    position: absolute;
+    width: 92px;
+    height: 92px;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0.92;
+    animation: moveLogo 24s linear infinite, rotateLogo 7s linear infinite;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.4)) drop-shadow(0 0 20px rgba(230,0,18,0.55));
+}
+
+@keyframes moveLogo {
+    0% { top: 5%; left: 5%; }
+    20% { top: 10%; left: 85%; }
+    40% { top: 70%; left: 80%; }
+    60% { top: 85%; left: 15%; }
+    80% { top: 35%; left: 55%; }
+    100% { top: 5%; left: 5%; }
+}
+
+@keyframes rotateLogo {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.container {
+    position: relative;
+    z-index: 20;
+    text-align: center;
+    padding: 50px 60px;
+    border: 4px solid white;
+    background: rgba(0,0,0,0.72);
+    min-width: 900px;
+    max-width: 95vw;
+}
+
+.main-logo {
+    width: 380px;
+    max-width: 90%;
+    margin-bottom: 30px;
+}
+
+.countdown {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.time-box {
+    min-width: 140px;
+    padding: 14px;
+    border: 2px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.03);
+}
+
+.number {
+    font-size: 44px;
+    font-weight: 900;
+    color: var(--gold);
+    text-shadow: 0 0 10px rgba(234,210,125,0.5);
+}
+
+.label {
+    font-size: 10px;
+    color: var(--blue);
+    margin-top: 10px;
+}
+
+.footer {
+    margin-top: 30px;
+    font-size: 9px;
+    opacity: 0.7;
+}
+
+.legal-footer {
+    position: absolute;
+    bottom: 8px;
+    width: 100%;
+    text-align: center;
+    font-size: 8px;
+    opacity: 0.5;
+    z-index: 30;
+}
+
+@media (max-width: 768px) {
+    body { overflow-y: auto; }
+
+    .container {
+        min-width: unset;
+        width: 95%;
+        padding: 20px;
+        transform: scale(0.95);
+    }
+
+    .main-logo { width: 240px; }
+
+    .countdown {
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .time-box {
+        width: 100%;
+        max-width: 220px;
+    }
+
+    .number { font-size: 32px; }
+
+    .label { font-size: 9px; }
+
+    .legal-footer { font-size: 7px; }
+}
+
+@media (max-width: 420px) {
+    .main-logo { width: 200px; }
+    .number { font-size: 28px; }
+    .container { transform: scale(0.9); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="crt" id="crt">
+
+    <img src="res/logo_icon.svg" class="floating-logo">
+
+    <div class="container">
+
+        <img src="res/main-logo.png" class="main-logo">
+
+        <div class="countdown">
+            <div class="time-box">
+                <div id="days" class="number">00</div>
+                <div class="label">DAYS</div>
+            </div>
+
+            <div class="time-box">
+                <div id="hours" class="number">00</div>
+                <div class="label">HOURS</div>
+            </div>
+
+            <div class="time-box">
+                <div id="minutes" class="number">00</div>
+                <div class="label">MIN</div>
+            </div>
+
+            <div class="time-box">
+                <div id="seconds" class="number">00</div>
+                <div class="label">SEC</div>
+            </div>
+        </div>
+
+        <div class="footer">LAUNCH: 12 NOV 2026</div>
+
+    </div>
+</div>
+
+<div class="legal-footer">
+SNK / Neo Geo trademarks © SNK Corporation. Fan project non-commercial.
+</div>
+
+<audio id="biosSound" preload="auto">
+    <source src="res/neogeo-bios.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+const backgrounds = [
+    "res/mainback_neogeo.jpg",
+    "res/mainback_neogeo_2.jpg"
+];
+
+const crt = document.getElementById("crt");
+
+function randomBg() {
+    const bg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
+    crt.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.75)), url('${bg}')`;
+}
+
+randomBg();
+setInterval(randomBg, 6000);
+
+const targetDate = new Date(2026, 10, 12, 0, 0, 0);
+
+const audio = document.getElementById("biosSound");
+let finished = false;
+
+function update() {
+    const now = new Date();
+    const diff = targetDate - now;
+
+    if (diff <= 0 && !finished) {
+        finished = true;
+        audio.volume = 1.0;
+        audio.play().catch(() => {});
+        return;
+    }
+
+    const s = Math.floor(diff / 1000);
+    const d = Math.floor(s / 86400);
+    const h = Math.floor((s % 86400) / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+
+    document.getElementById("days").textContent = String(d).padStart(2,"0");
+    document.getElementById("hours").textContent = String(h).padStart(2,"0");
+    document.getElementById("minutes").textContent = String(m).padStart(2,"0");
+    document.getElementById("seconds").textContent = String(sec).padStart(2,"0");
+}
+
+setInterval(update, 1000);
+update();
+
+</script>
+
+</body>
+</html>
