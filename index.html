@@ -26,6 +26,15 @@ html, body {
     background: black;
     font-family: 'Orbitron', sans-serif;
     color: white;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+img {
+    -webkit-user-drag: none;
+    user-drag: none;
 }
 
 .crt {
@@ -147,8 +156,69 @@ html, body {
 
 .footer {
     margin-top: 30px;
-    font-size: 9px;
-    opacity: 0.7;
+    font-size: 11px;
+    color: var(--gold);
+    opacity: 0.8;
+    letter-spacing: 2px;
+}
+
+.links-section {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.links-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.coupon-text {
+    font-size: 10px;
+    color: var(--blue);
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    text-shadow: 0 0 5px rgba(0,217,255,0.4);
+}
+
+.coupon-text span {
+    font-weight: 900;
+    font-size: 13px;
+    background: rgba(0, 217, 255, 0.1);
+    padding: 3px 8px;
+    border: 1px dashed var(--blue);
+    border-radius: 3px;
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    color: white;
+}
+
+.link-btn {
+    display: inline-block;
+    padding: 10px 16px;
+    background: rgba(234, 210, 125, 0.05);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(234, 210, 125, 0.1);
+}
+
+.link-btn:hover {
+    background: rgba(234, 210, 125, 0.2);
+    box-shadow: 0 0 20px rgba(234, 210, 125, 0.4);
+    color: white;
+    border-color: white;
+    transform: translateY(-2px);
 }
 
 .legal-footer {
@@ -160,6 +230,8 @@ html, body {
     opacity: 0.5;
     z-index: 30;
 }
+
+
 
 @media (max-width: 768px) {
     body { overflow-y: auto; }
@@ -191,15 +263,91 @@ html, body {
     .legal-footer { font-size: 7px; }
 }
 
+.arcade-hud {
+    position: absolute;
+    bottom: 25px;
+    right: 30px;
+    text-align: right;
+    z-index: 100;
+    pointer-events: auto;
+}
+
+.insert-coin-text {
+    font-size: 16px;
+    color: red;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+    animation: blink 1s infinite step-start;
+    cursor: pointer;
+    margin-bottom: 5px;
+    user-select: none;
+    transition: all 0.2s;
+}
+
+.insert-coin-text:active {
+    transform: scale(0.95);
+}
+
+.credit-counter {
+    font-size: 12px;
+    color: white;
+    letter-spacing: 1px;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    user-select: none;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.video-section {
+    margin-top: 35px;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid rgba(234, 210, 125, 0.3);
+    box-shadow: 0 0 15px rgba(234, 210, 125, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.video-section iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: block;
+    opacity: 0.85;
+    transition: opacity 0.3s;
+}
+
+.video-section iframe:hover {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .arcade-hud {
+        bottom: 15px;
+        right: 15px;
+    }
+    .insert-coin-text { font-size: 12px; }
+    .credit-counter { font-size: 10px; }
+}
+
 @media (max-width: 420px) {
     .main-logo { width: 200px; }
     .number { font-size: 28px; }
     .container { transform: scale(0.9); }
 }
+
+
 </style>
 </head>
 
 <body>
+
 
 <div class="crt" id="crt">
 
@@ -218,6 +366,29 @@ html, body {
 
         <div class="footer">LAUNCH: 12 NOV 2026</div>
 
+        <div class="links-section">
+            <div class="coupon-text" id="couponText"><span>LOCKED</span> INSERTA 4 MONEDAS</div>
+            <div class="links-row">
+                <a href="https://plaionreplai.com/products/neogeo-aes" target="_blank" class="link-btn">NEOGEO AES (PLAION)</a>
+                <a href="https://plaionreplai.com/products/neogeo-aes-anniversary-edition" target="_blank" class="link-btn">ANNIVERSARY ED. (PLAION)</a>
+                <a href="https://plaionreplai.com/products/neogeo-aes-ultimate-edition" target="_blank" class="link-btn">ULTIMATE ED. (PLAION)</a>
+            </div>
+            <div class="links-row">
+                <a href="https://www.todoconsolas.com/400-neogeo" target="_blank" class="link-btn">TODOCONSOLAS</a>
+                <a href="https://www.amazon.es/s?k=neogeo+aes" target="_blank" class="link-btn">AMAZON.ES</a>
+                <a href="https://www.game.es/buscar/neogeo" target="_blank" class="link-btn">GAME.ES</a>
+            </div>
+        </div>
+
+        <div class="video-section">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/U7J0whhwi0U?si=OL0EU4I7xx4rUFjP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+
+    </div>
+    
+    <div class="arcade-hud">
+        <div id="insertCoinText" class="insert-coin-text">INSERT COIN</div>
+        <div class="credit-counter">CREDIT <span id="creditCount">00</span></div>
     </div>
 </div>
 
@@ -227,6 +398,14 @@ SNK / Neo Geo trademarks © SNK Corporation. Fan project non-commercial.
 
 <audio id="biosSound" preload="auto">
     <source src="res/neogeo-bios.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="easterEggSound" preload="auto">
+    <source src="res/metal-slug-hmg.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="coinSound" preload="auto">
+    <source src="res/insert-coin.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -239,6 +418,28 @@ const backgrounds = [
 const crt = document.getElementById("crt");
 const logo = document.getElementById("floatingLogo");
 const audio = document.getElementById("biosSound");
+
+// --- PROTECCIÓN BÁSICA CONTRA ROBO DE RECURSOS ---
+// Bloquear clic derecho
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+// Bloquear arrastrar elementos
+document.addEventListener('dragstart', e => e.preventDefault());
+
+// Bloquear atajos de teclado para herramientas de desarrollador
+document.addEventListener('keydown', function(e) {
+    // F12
+    if (e.key === 'F12' || e.keyCode === 123) e.preventDefault();
+    // Ctrl+Shift+I / Cmd+Option+I (Herramientas de desarrollador)
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'i')) e.preventDefault();
+    // Ctrl+Shift+C / Cmd+Option+C (Selector de elementos)
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'C' || e.key === 'c')) e.preventDefault();
+    // Ctrl+Shift+J / Cmd+Option+J (Consola)
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'J' || e.key === 'j')) e.preventDefault();
+    // Ctrl+U / Cmd+U (Ver código fuente)
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'U' || e.key === 'u')) e.preventDefault();
+});
+// -------------------------------------------------
 
 let taps = 0;
 let lastTap = 0;
@@ -317,6 +518,69 @@ function update() {
 
 setInterval(update, 1000);
 update();
+
+
+
+// --- EASTER EGG (KONAMI CODE) ---
+const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+let konamiIndex = 0;
+const easterEggSound = document.getElementById("easterEggSound");
+
+document.addEventListener('keydown', (e) => {
+    // Prevent default scrolling for arrows when doing the code
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        if (konamiIndex > 0) e.preventDefault();
+    }
+
+    if (e.key === konamiCode[konamiIndex] || e.key.toLowerCase() === konamiCode[konamiIndex].toLowerCase()) {
+        konamiIndex++;
+        if (konamiIndex === konamiCode.length) {
+            easterEggSound.currentTime = 0;
+            easterEggSound.volume = 1.0;
+            easterEggSound.play().catch(() => {});
+            
+            // Visual glitch effect
+            crt.classList.add("glitch");
+            setTimeout(() => crt.classList.remove("glitch"), 2000);
+
+            konamiIndex = 0; // Reset
+        }
+    } else {
+        konamiIndex = 0; // Reset if wrong key
+    }
+});
+
+// --- INSERT COIN MECHANIC ---
+const insertCoinBtn = document.getElementById("insertCoinText");
+const creditCountDisplay = document.getElementById("creditCount");
+const coinSound = document.getElementById("coinSound");
+const couponText = document.getElementById("couponText");
+let credits = 0;
+
+insertCoinBtn.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    
+    coinSound.currentTime = 0;
+    coinSound.volume = 1.0;
+    coinSound.play().catch(() => {});
+    
+    credits++;
+    creditCountDisplay.textContent = String(credits).padStart(2, "0");
+    
+    // Desbloqueo del cupón a los 4 créditos
+    if (credits === 4 && couponText) {
+        couponText.innerHTML = 'CUPÓN EXCLUSIVO PLAION: <span>WELCOME5</span>';
+    }
+    
+    // Visual Easter Egg after 4 credits (NeoGeo 4 buttons)
+    if (credits >= 4 && insertCoinBtn.textContent !== "PRESS START") {
+        insertCoinBtn.textContent = "PRESS START";
+        insertCoinBtn.style.color = "var(--blue)";
+        insertCoinBtn.style.textShadow = "0 0 10px rgba(0, 217, 255, 0.8)";
+    }
+});
+
+
 
 </script>
 
