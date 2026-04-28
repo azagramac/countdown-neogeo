@@ -600,7 +600,7 @@ function update() {
     const progressPercent = document.getElementById("progressPercent");
     
     if (progressBar) progressBar.style.width = progress + "%";
-    if (progressPercent) progressPercent.textContent = Math.floor(progress) + "%";
+    if (progressPercent) progressPercent.textContent = progress.toFixed(5) + "%";
 
     // Update Metal Slug character
     const slug = document.getElementById("slugCharacter");
