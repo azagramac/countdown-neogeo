@@ -389,6 +389,64 @@ img {
     100% { background-position: 0% 0%; }
 }
 
+.product-gallery {
+    margin-top: 45px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    min-height: 120px;
+}
+
+.product-card {
+    width: 150px;
+    height: 110px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.product-card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.product-card:hover {
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(234, 210, 125, 0.2);
+    background: rgba(234, 210, 125, 0.05);
+}
+
+.product-card img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: grayscale(0.3) brightness(0.9);
+    transition: all 0.3s ease;
+}
+
+.product-card:hover img {
+    filter: grayscale(0) brightness(1.1) drop-shadow(0 0 8px rgba(255,255,255,0.4));
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .product-gallery {
+        margin-top: 30px;
+        gap: 10px;
+    }
+    .product-card {
+        width: 120px;
+        height: 90px;
+    }
+}
+
 @media (max-width: 420px) {
     .main-logo { width: 180px; }
     .countdown { gap: 6px; }
@@ -432,7 +490,7 @@ img {
             </div>
             <div class="links-row">
                 <a href="https://www.todoconsolas.com/400-neogeo" target="_blank" class="link-btn">TODOCONSOLAS</a>
-                <a href="https://www.amazon.es/s?k=neogeo+aes" target="_blank" class="link-btn">AMAZON.ES</a>
+                <a href="https://www.amazon.es/Plaion-NEOGEO-AES/dp/B0GXBCSGYQ?tag=azagramac2026-21" target="_blank" class="link-btn">AMAZON.ES</a>
                 <a href="https://www.game.es/buscar/neogeo" target="_blank" class="link-btn">GAME.ES</a>
             </div>
         </div>
@@ -446,6 +504,7 @@ img {
                 <div id="progressBar" class="progress-bar"></div>
             </div>
         </div>
+        <div class="product-gallery" id="productGallery"></div>
 
     </div>
     
@@ -476,6 +535,53 @@ SNK / Neo Geo trademarks © SNK Corporation. Fan project non-commercial.
 </audio>
 
 <script>
+
+const productImages = [
+    { img: "https://plaionreplai.com/cdn/shop/files/INT_OriginalSKU_04.webp", link: "https://www.amazon.es/Plaion-NEOGEO-AES/dp/B0GXBCSGYQ?tag=azagramac2026-21" },
+    { img: "https://plaionreplai.com/cdn/shop/files/INT_OriginalSKU_01.webp", link: "https://www.amazon.es/Plaion-NEOGEO-AES/dp/B0GXBCSGYQ?tag=azagramac2026-21" },
+    { img: "https://plaionreplai.com/cdn/shop/files/INT_AnniversarySKU_01.webp", link: "https://plaionreplai.com/products/neogeo-aes-anniversary-edition" },
+    { img: "https://plaionreplai.com/cdn/shop/files/INT_AnniversarySKU_02.webp", link: "https://plaionreplai.com/products/neogeo-aes-anniversary-edition" },
+    { img: "https://plaionreplai.com/cdn/shop/files/INT_AnniversarySKU_05.webp", link: "https://plaionreplai.com/products/neogeo-aes-anniversary-edition" },
+    { img: "https://plaionreplai.com/cdn/shop/files/INT_AnniversarySKU_08.webp", link: "https://www.amazon.es/Plaion-Metal-Slug-NGAES/dp/B0GXB8NNHV?tag=azagramac2026-21" },
+    { img: "https://plaionreplai.com/cdn/shop/files/INT_OriginalSKU_06.webp", link: "https://www.amazon.es/NEO-GEO-Arcade-Stick-Black/dp/B0GXBB8TNK?tag=azagramac2026-21" },
+    { img: "https://plaionreplai.com/cdn/shop/files/INT_UltimateSKU_01.webp", link: "https://plaionreplai.com/products/neogeo-aes-ultimate-edition" },
+    { img: "https://plaionreplai.com/cdn/shop/files/INT_UltimateSKU_12.webp", link: "https://www.amazon.es/Plaion-Metal-Slug-NGAES/dp/B0GXB8NNHV?tag=azagramac2026-21" },
+    { img: "https://plaionreplai.com/cdn/shop/files/INT_UltimateSKU_10.webp", link: "https://www.amazon.es/King-Fighters-2002-NGAES/dp/B0GXB67TFC?tag=azagramac2026-21" },
+    { img: "https://plaionreplai.com/cdn/shop/files/INT_UltimateSKU_08.webp", link: "https://www.amazon.es/Samurai-Shodown-V-Special-NGAES/dp/B0GXB75FD4?tag=azagramac2026-21" },
+    { img: "https://plaionreplai.com/cdn/shop/files/INT_UltimateSKU_09.webp", link: "https://www.amazon.es/Plaion-Shock-Troopers-NGAES/dp/B0GXB8H75B?tag=azagramac2026-21" },
+    { img: "https://plaionreplai.com/cdn/shop/files/INT_UltimateSKU_11.webp", link: "https://www.amazon.es/Plaion-Garou-Mark-Wolves-NGAES/dp/B0GXB25KBS?tag=azagramac2026-21" },
+    { img: "https://plaionreplai.com/cdn/shop/files/INT_UltimateSKU_16.webp", link: "https://www.amazon.es/NEO-GEO-Memory-Card-Black/dp/B0GXB66B6Z?tag=azagramac2026-21" }
+];
+
+function updateGallery() {
+    const gallery = document.getElementById("productGallery");
+    if (!gallery) return;
+    
+    const shuffled = [...productImages].sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, 3);
+    
+    gallery.style.opacity = '0';
+    
+    setTimeout(() => {
+        gallery.innerHTML = selected.map((item, i) => `
+            <div class="product-card" style="transition-delay: ${i * 100}ms">
+                <a href="${item.link}" target="_blank">
+                    <img src="${item.img}" alt="NeoGeo AES">
+                </a>
+            </div>
+        `).join('');
+        
+        gallery.style.opacity = '1';
+        
+        setTimeout(() => {
+            const cards = gallery.querySelectorAll('.product-card');
+            cards.forEach(card => card.classList.add('show'));
+        }, 50);
+    }, 500);
+}
+
+setInterval(updateGallery, 8000);
+updateGallery();
 
 const backgrounds = [
     "res/mainback_neogeo.jpg",
