@@ -84,23 +84,22 @@ img {
 }
 
 .floating-logo {
-    position: absolute;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 92px;
     height: 92px;
     z-index: 999;
     opacity: 0.92;
-    animation: rotateLogo 7s linear infinite;
+    animation: none;
     filter: drop-shadow(0 0 10px rgba(255,255,255,0.4)) drop-shadow(0 0 20px rgba(230,0,18,0.55));
     pointer-events: auto;
     touch-action: manipulation;
     cursor: pointer;
+    will-change: transform;
 }
 
 
-@keyframes rotateLogo {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
 
 .container {
     position: relative;
@@ -579,10 +578,10 @@ function updateGallery() {
             const cards = gallery.querySelectorAll('.product-card');
             cards.forEach(card => card.classList.add('show'));
         }, 50);
-    }, 500);
+    }, 200);
 }
 
-setInterval(updateGallery, 8000);
+setInterval(updateGallery, 6000);
 updateGallery();
 
 const backgrounds = [
@@ -657,34 +656,60 @@ logo.addEventListener("pointerdown", (e) => {
     handleTap();
 });
 
-let logoX = Math.random() * 80 + 10;
-let logoY = Math.random() * 80 + 10;
-let velX = (Math.random() - 0.5) * 0.08;
-let velY = (Math.random() - 0.5) * 0.08;
+let logoWidth = 92;
+let logoHeight = 92;
+let logoX = Math.random() * (window.innerWidth - logoWidth);
+let logoY = Math.random() * (window.innerHeight - logoHeight);
+let velX = (Math.random() - 0.5) * 5;
+let velY = (Math.random() - 0.5) * 5;
+let logoRotation = 0;
 
 function updateLogo() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const maxX = Math.max(0, w - logoWidth);
+    const maxY = Math.max(0, h - logoHeight);
+    
     logoX += velX;
     logoY += velY;
+    logoRotation += 0.8;
     
-    if (logoX <= 2 || logoX >= 88) {
-        velX *= -1;
-        logoX = Math.max(2, Math.min(88, logoX));
+    if (logoX <= 0) {
+        velX = Math.abs(velX);
+        logoX = 0;
+    } else if (logoX >= maxX) {
+        velX = -Math.abs(velX);
+        logoX = maxX;
     }
-    if (logoY <= 2 || logoY >= 88) {
-        velY *= -1;
-        logoY = Math.max(2, Math.min(88, logoY));
+
+    if (logoY <= 0) {
+        velY = Math.abs(velY);
+        logoY = 0;
+    } else if (logoY >= maxY) {
+        velY = -Math.abs(velY);
+        logoY = maxY;
     }
     
     if (Math.random() < 0.002) {
-        velX = (Math.random() - 0.5) * 0.15;
-        velY = (Math.random() - 0.5) * 0.15;
+        velX += (Math.random() - 0.5) * 2;
+        velY += (Math.random() - 0.5) * 2;
+        // Limit speed
+        const speed = Math.sqrt(velX*velX + velY*velY);
+        if (speed > 6) {
+            velX *= 6/speed;
+            velY *= 6/speed;
+        }
     }
     
-    logo.style.left = logoX + "%";
-    logo.style.top = logoY + "%";
+    logo.style.transform = `translate3d(${logoX}px, ${logoY}px, 0) rotate(${logoRotation}deg)`;
     requestAnimationFrame(updateLogo);
 }
 updateLogo();
+
+window.addEventListener('resize', () => {
+    logoWidth = logo.offsetWidth || 92;
+    logoHeight = logo.offsetHeight || 92;
+});
 
 const startDate = new Date(2026, 3, 16, 0, 0, 0); 
 const targetDate = new Date(2026, 10, 12, 0, 0, 0); 
