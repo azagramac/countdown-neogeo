@@ -611,6 +611,7 @@ img {
         <div class="egg-slot" id="slot-coins" title="Insert Coins Secret"><img src="res/pow_icon.gif"></div>
         <div class="egg-slot" id="slot-logo" title="Logo Tap Secret"><img src="res/pow_icon.gif"></div>
         <div class="egg-slot" id="slot-konami" title="Konami Code Secret"><img src="res/pow_icon.gif"></div>
+        <div class="egg-slot" id="slot-marco" title="Marco Click Secret"><img src="res/pow_icon.gif"></div>
     </div>
 
     <div id="victoryOverlay" class="victory-overlay">
@@ -642,6 +643,10 @@ img {
 
 <audio id="missionCompleteSound" preload="auto">
     <source src="res/mission_complete.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="okSound" preload="auto">
+    <source src="res/ok.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -820,7 +825,8 @@ updateLogo();
 const eggsFound = {
     coins: false,
     logo: false,
-    konami: false
+    konami: false,
+    marco: false
 };
 
 function foundEgg(type) {
@@ -828,12 +834,13 @@ function foundEgg(type) {
         eggsFound[type] = true;
         const slot = document.getElementById(`slot-${type}`);
         if (slot) slot.classList.add("found");
+        
         checkVictory();
     }
 }
 
 function checkVictory() {
-    if (eggsFound.coins && eggsFound.logo && eggsFound.konami) {
+    if (eggsFound.coins && eggsFound.logo && eggsFound.konami && eggsFound.marco) {
         const overlay = document.getElementById("victoryOverlay");
         const sound = document.getElementById("missionCompleteSound");
         if (overlay && sound) {
@@ -848,7 +855,7 @@ function checkVictory() {
                         overlay.style.display = "none";
                         overlay.style.opacity = '1';
                     }, 800);
-                }, 40000);
+                }, 4000); // 4 segundos de gloria
             }, 500);
         }
     }
@@ -897,6 +904,24 @@ function update() {
 
 setInterval(update, 1000);
 update();
+
+const slugChar = document.getElementById("slugCharacter");
+if (slugChar) {
+    slugChar.style.cursor = "pointer";
+    slugChar.addEventListener("click", () => {
+        foundEgg('marco');
+        const okSound = document.getElementById("okSound");
+        if (okSound) {
+            okSound.currentTime = 0;
+            okSound.play().catch(() => {});
+        }
+        
+        slugChar.style.filter = "brightness(2) contrast(2)";
+        setTimeout(() => {
+            slugChar.style.filter = "drop-shadow(0 0 5px rgba(255,255,255,0.3))";
+        }, 200);
+    });
+}
 
 const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 let konamiIndex = 0;
