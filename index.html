@@ -236,58 +236,59 @@ img {
 
     .container {
         min-width: unset;
-        width: 92%;
-        padding: 30px 15px;
+        width: 95%;
+        padding: 40px 15px;
+        border-width: 2px;
     }
 
-    .main-logo { width: 220px; }
+    .main-logo { width: 280px; max-width: 90%; }
 
     .countdown {
         flex-direction: row;
-        gap: 10px;
+        gap: 12px;
         justify-content: center;
     }
 
     .time-box {
-        min-width: 75px;
-        flex: 1 1 75px;
-        padding: 10px 5px;
+        min-width: 80px;
+        flex: 1 1 80px;
+        padding: 15px 5px;
     }
 
-    .number { font-size: 24px; }
-    .label { font-size: 8px; margin-top: 5px; }
+    .number { font-size: 32px; }
+    .label { font-size: 10px; margin-top: 8px; }
 
     .floating-logo {
-        width: 50px;
-        height: 50px;
+        width: 60px;
+        height: 60px;
     }
 
     .slug-character {
-        width: 40px;
-        height: 40px;
-        bottom: 10px;
+        width: 50px;
+        height: 50px;
+        bottom: 12px;
     }
 
     .progress-section {
-        margin-top: 20px;
+        margin-top: 30px;
         max-width: 100%;
     }
 
     .progress-label {
-        font-size: 8px;
+        font-size: 10px;
     }
 
     .link-btn {
-        padding: 8px 12px;
-        font-size: 9px;
+        padding: 12px 18px;
+        font-size: 11px;
     }
 
     .arcade-hud {
-        bottom: 15px;
-        right: 15px;
+        bottom: 20px;
+        right: 20px;
     }
-    .insert-coin-text { font-size: 12px; }
-    .credit-counter { font-size: 10px; }
+    .insert-coin-text { font-size: 14px; }
+    .credit-counter { font-size: 12px; }
 }
 
 .arcade-hud {
@@ -448,13 +449,14 @@ img {
 }
 
 @media (max-width: 420px) {
-    .main-logo { width: 180px; }
-    .countdown { gap: 6px; }
-    .time-box { min-width: 60px; flex: 1 1 60px; }
-    .number { font-size: 20px; }
-    .coupon-text { font-size: 8px; }
-    .coupon-text span { font-size: 11px; }
-    .link-btn { font-size: 8px; padding: 6px 10px; }
+    .main-logo { width: 220px; }
+    .countdown { gap: 8px; flex-wrap: wrap; }
+    .time-box { min-width: 70px; flex: 1 1 70px; padding: 12px 5px; }
+    .number { font-size: 26px; }
+    .coupon-text { font-size: 10px; }
+    .coupon-text span { font-size: 14px; }
+    .link-btn { font-size: 10px; padding: 10px 14px; }
+    .product-card { width: 100px; height: 80px; }
 }
 
 
