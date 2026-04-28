@@ -1,5 +1,10 @@
 # 🎮 NEOGEO AES+ — Edición 35º Aniversario
 
+🗓️ **Lanzamiento:** 12 de noviembre de 2026
+<img width="800" alt="countdown" src="https://github.com/user-attachments/assets/3c822f1a-e898-4a4c-aed1-2d33ca81e7dc" />
+* Incluye easter eggs
+
+
 ## 🕹️ El regreso de una leyenda
 
 **SNK** y **PLAION REPLAI** unen fuerzas para devolver a la vida la consola doméstica definitiva con motivo de su **35º aniversario**.
