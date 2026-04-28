@@ -90,7 +90,6 @@ img {
     z-index: 999;
     opacity: 0.92;
     animation: rotateLogo 7s linear infinite;
-    /* No transition for fluid JS movement */
     filter: drop-shadow(0 0 10px rgba(255,255,255,0.4)) drop-shadow(0 0 20px rgba(230,0,18,0.55));
     pointer-events: auto;
     touch-action: manipulation;
@@ -237,29 +236,58 @@ img {
 
     .container {
         min-width: unset;
-        width: 95%;
-        padding: 20px;
-        transform: scale(0.95);
+        width: 92%;
+        padding: 30px 15px;
     }
 
-    .main-logo { width: 240px; }
+    .main-logo { width: 220px; }
 
     .countdown {
-        flex-direction: column;
-        gap: 12px;
-        align-items: center;
+        flex-direction: row;
+        gap: 10px;
+        justify-content: center;
     }
 
     .time-box {
-        width: 100%;
-        max-width: 220px;
+        min-width: 75px;
+        flex: 1 1 75px;
+        padding: 10px 5px;
     }
 
-    .number { font-size: 32px; }
+    .number { font-size: 24px; }
+    .label { font-size: 8px; margin-top: 5px; }
 
-    .label { font-size: 9px; }
+    .floating-logo {
+        width: 50px;
+        height: 50px;
+    }
 
-    .legal-footer { font-size: 7px; }
+    .slug-character {
+        width: 40px;
+        height: 40px;
+        bottom: 10px;
+    }
+
+    .progress-section {
+        margin-top: 20px;
+        max-width: 100%;
+    }
+
+    .progress-label {
+        font-size: 8px;
+    }
+
+    .link-btn {
+        padding: 8px 12px;
+        font-size: 9px;
+    }
+
+    .arcade-hud {
+        bottom: 15px;
+        right: 15px;
+    }
+    .insert-coin-text { font-size: 12px; }
+    .credit-counter { font-size: 10px; }
 }
 
 .arcade-hud {
@@ -323,7 +351,7 @@ img {
 
 .slug-character {
     position: absolute;
-    bottom: 12px; /* Subido para solapar el texto y estar sobre la barra */
+    bottom: 12px;
     left: 0%;
     width: 55px;
     height: 55px;
@@ -335,7 +363,7 @@ img {
     transform: translateX(-50%);
     z-index: 100;
     filter: drop-shadow(0 0 5px rgba(255,255,255,0.3));
-    transition: left 1s linear; /* Movimiento fluido */
+    transition: left 1s linear;
 }
 
 .progress-wrapper {
@@ -361,19 +389,14 @@ img {
     100% { background-position: 0% 0%; }
 }
 
-@media (max-width: 768px) {
-    .arcade-hud {
-        bottom: 15px;
-        right: 15px;
-    }
-    .insert-coin-text { font-size: 12px; }
-    .credit-counter { font-size: 10px; }
-}
-
 @media (max-width: 420px) {
-    .main-logo { width: 200px; }
-    .number { font-size: 28px; }
-    .container { transform: scale(0.9); }
+    .main-logo { width: 180px; }
+    .countdown { gap: 6px; }
+    .time-box { min-width: 60px; flex: 1 1 60px; }
+    .number { font-size: 20px; }
+    .coupon-text { font-size: 8px; }
+    .coupon-text span { font-size: 11px; }
+    .link-btn { font-size: 8px; padding: 6px 10px; }
 }
 
 
@@ -463,27 +486,13 @@ const crt = document.getElementById("crt");
 const logo = document.getElementById("floatingLogo");
 const audio = document.getElementById("biosSound");
 
-// --- PROTECCIÓN BÁSICA CONTRA ROBO DE RECURSOS ---
-// Bloquear clic derecho
 document.addEventListener('contextmenu', e => e.preventDefault());
 
-// Bloquear arrastrar elementos
 document.addEventListener('dragstart', e => e.preventDefault());
 
-// Bloquear atajos de teclado para herramientas de desarrollador
 document.addEventListener('keydown', function(e) {
-    // F12
-    if (e.key === 'F12' || e.keyCode === 123) e.preventDefault();
-    // Ctrl+Shift+I / Cmd+Option+I (Herramientas de desarrollador)
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'i')) e.preventDefault();
-    // Ctrl+Shift+C / Cmd+Option+C (Selector de elementos)
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'C' || e.key === 'c')) e.preventDefault();
-    // Ctrl+Shift+J / Cmd+Option+J (Consola)
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'J' || e.key === 'j')) e.preventDefault();
-    // Ctrl+U / Cmd+U (Ver código fuente)
     if ((e.ctrlKey || e.metaKey) && (e.key === 'U' || e.key === 'u')) e.preventDefault();
 });
-// -------------------------------------------------
 
 let taps = 0;
 let lastTap = 0;
@@ -549,7 +558,6 @@ function updateLogo() {
     logoX += velX;
     logoY += velY;
     
-    // Borde de rebote (en %)
     if (logoX <= 2 || logoX >= 88) {
         velX *= -1;
         logoX = Math.max(2, Math.min(88, logoX));
@@ -559,7 +567,6 @@ function updateLogo() {
         logoY = Math.max(2, Math.min(88, logoY));
     }
     
-    // Cambio aleatorio de dirección ocasional
     if (Math.random() < 0.002) {
         velX = (Math.random() - 0.5) * 0.15;
         velY = (Math.random() - 0.5) * 0.15;
@@ -571,8 +578,8 @@ function updateLogo() {
 }
 updateLogo();
 
-const startDate = new Date(2026, 3, 16, 0, 0, 0); // April 16, 2026
-const targetDate = new Date(2026, 10, 12, 0, 0, 0); // November 12, 2026
+const startDate = new Date(2026, 3, 16, 0, 0, 0); 
+const targetDate = new Date(2026, 10, 12, 0, 0, 0); 
 
 function update() {
     const now = new Date();
@@ -591,7 +598,6 @@ function update() {
     document.getElementById("minutes").textContent = String(m).padStart(2,"0");
     document.getElementById("seconds").textContent = String(sec).padStart(2,"0");
 
-    // Update progress bar
     const total = targetDate - startDate;
     const elapsed = now - startDate;
     const progress = Math.min(Math.max((elapsed / total) * 100, 0), 100);
@@ -602,7 +608,6 @@ function update() {
     if (progressBar) progressBar.style.width = progress + "%";
     if (progressPercent) progressPercent.textContent = progress.toFixed(5) + "%";
 
-    // Update Metal Slug character
     const slug = document.getElementById("slugCharacter");
     if (slug) {
         slug.style.left = progress + "%";
@@ -612,15 +617,11 @@ function update() {
 setInterval(update, 1000);
 update();
 
-
-
-// --- EASTER EGG (KONAMI CODE) ---
 const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 let konamiIndex = 0;
 const easterEggSound = document.getElementById("easterEggSound");
 
 document.addEventListener('keydown', (e) => {
-    // Prevent default scrolling for arrows when doing the code
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
         if (konamiIndex > 0) e.preventDefault();
     }
@@ -632,18 +633,16 @@ document.addEventListener('keydown', (e) => {
             easterEggSound.volume = 1.0;
             easterEggSound.play().catch(() => {});
             
-            // Visual glitch effect
             crt.classList.add("glitch");
             setTimeout(() => crt.classList.remove("glitch"), 2000);
 
-            konamiIndex = 0; // Reset
+            konamiIndex = 0;
         }
     } else {
-        konamiIndex = 0; // Reset if wrong key
+        konamiIndex = 0;
     }
 });
 
-// --- INSERT COIN MECHANIC ---
 const insertCoinBtn = document.getElementById("insertCoinText");
 const creditCountDisplay = document.getElementById("creditCount");
 const coinSound = document.getElementById("coinSound");
@@ -660,11 +659,9 @@ insertCoinBtn.addEventListener("pointerdown", (e) => {
     credits++;
     creditCountDisplay.textContent = String(credits).padStart(2, "0");
     
-    // Desbloqueo del cupón a los 4 créditos
     if (credits === 4 && couponText) {
         couponText.innerHTML = 'EXCLUSIVE PLAION COUPON: <span id="couponCode">WELCOME5</span>';
         
-        // Add click to copy listener
         const couponCode = document.getElementById("couponCode");
         couponCode.addEventListener("click", () => {
             const code = "WELCOME5";
@@ -674,7 +671,6 @@ insertCoinBtn.addEventListener("pointerdown", (e) => {
                 couponCode.style.color = "var(--gold)";
                 couponCode.style.borderColor = "var(--gold)";
                 
-                // Play Thank You sound
                 const thankYouSound = document.getElementById("thankYouSound");
                 if (thankYouSound) {
                     thankYouSound.currentTime = 0;
@@ -691,7 +687,6 @@ insertCoinBtn.addEventListener("pointerdown", (e) => {
         });
     }
     
-    // Visual Easter Egg after 4 credits (NeoGeo 4 buttons)
     if (credits >= 4 && insertCoinBtn.textContent !== "PRESS START") {
         insertCoinBtn.textContent = "PRESS START";
         insertCoinBtn.style.color = "var(--blue)";
