@@ -448,6 +448,75 @@ img {
     background: rgba(234, 210, 125, 0.05);
 }
 
+.easter-egg-counter {
+    position: fixed;
+    top: 25px;
+    left: 25px;
+    display: flex;
+    gap: 12px;
+    z-index: 1001;
+}
+
+.egg-slot {
+    width: 38px;
+    height: 38px;
+    background: rgba(0,0,0,0.6);
+    border: 2px solid rgba(162, 144, 97, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.egg-slot.found {
+    border-color: var(--gold);
+    box-shadow: 0 0 15px rgba(162, 144, 97, 0.4);
+}
+
+.egg-slot img {
+    width: 28px;
+    height: 28px;
+    opacity: 0.15;
+    filter: grayscale(1);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.egg-slot.found img {
+    opacity: 1;
+    filter: grayscale(0);
+    transform: scale(1.1);
+}
+
+.victory-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    backdrop-filter: blur(8px);
+    transition: opacity 1s ease;
+}
+
+.victory-overlay img {
+    width: 180px;
+    image-rendering: pixelated;
+}
+
+.victory-text {
+    color: var(--gold);
+    font-size: 40px;
+    margin-top: 30px;
+    letter-spacing: 8px;
+    text-shadow: 0 0 20px rgba(162, 144, 97, 0.8);
+    font-weight: 900;
+}
+
 .product-card img {
     max-width: 100%;
     max-height: 100%;
@@ -538,6 +607,16 @@ img {
         <div id="insertCoinText" class="insert-coin-text">INSERT COIN</div>
         <div class="credit-counter">CREDIT <span id="creditCount">00</span></div>
     </div>
+    <div class="easter-egg-counter">
+        <div class="egg-slot" id="slot-coins" title="Insert Coins Secret"><img src="res/pow_icon.gif"></div>
+        <div class="egg-slot" id="slot-logo" title="Logo Tap Secret"><img src="res/pow_icon.gif"></div>
+        <div class="egg-slot" id="slot-konami" title="Konami Code Secret"><img src="res/pow_icon.gif"></div>
+    </div>
+
+    <div id="victoryOverlay" class="victory-overlay">
+        <img src="res/marco_victory.gif">
+        <div class="victory-text">MISSION COMPLETE!</div>
+    </div>
 </div>
 
 <div class="legal-footer">
@@ -559,6 +638,10 @@ img {
 
 <audio id="thankYouSound" preload="auto">
     <source src="res/thank-you.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="missionCompleteSound" preload="auto">
+    <source src="res/mission_complete.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -647,6 +730,8 @@ function triggerSound() {
 
 function glitchMode() {
     if (locked) return;
+    
+    foundEgg('logo');
 
     locked = true;
     crt.classList.add("glitch");
@@ -732,6 +817,43 @@ function updateLogo() {
 }
 updateLogo();
 
+const eggsFound = {
+    coins: false,
+    logo: false,
+    konami: false
+};
+
+function foundEgg(type) {
+    if (!eggsFound[type]) {
+        eggsFound[type] = true;
+        const slot = document.getElementById(`slot-${type}`);
+        if (slot) slot.classList.add("found");
+        checkVictory();
+    }
+}
+
+function checkVictory() {
+    if (eggsFound.coins && eggsFound.logo && eggsFound.konami) {
+        const overlay = document.getElementById("victoryOverlay");
+        const sound = document.getElementById("missionCompleteSound");
+        if (overlay && sound) {
+            setTimeout(() => {
+                overlay.style.display = "flex";
+                overlay.style.opacity = '1';
+                sound.currentTime = 0;
+                sound.play().catch(() => {});
+                setTimeout(() => {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => {
+                        overlay.style.display = "none";
+                        overlay.style.opacity = '1';
+                    }, 800);
+                }, 40000);
+            }, 500);
+        }
+    }
+}
+
 window.addEventListener('resize', () => {
     logoWidth = logo.offsetWidth || 92;
     logoHeight = logo.offsetHeight || 92;
@@ -788,6 +910,7 @@ document.addEventListener('keydown', (e) => {
     if (e.key === konamiCode[konamiIndex] || e.key.toLowerCase() === konamiCode[konamiIndex].toLowerCase()) {
         konamiIndex++;
         if (konamiIndex === konamiCode.length) {
+            foundEgg('konami');
             easterEggSound.currentTime = 0;
             easterEggSound.volume = 1.0;
             easterEggSound.play().catch(() => {});
@@ -819,6 +942,7 @@ insertCoinBtn.addEventListener("pointerdown", (e) => {
     creditCountDisplay.textContent = String(credits).padStart(2, "0");
     
     if (credits === 4 && couponText) {
+        foundEgg('coins');
         couponText.innerHTML = 'EXCLUSIVE PLAION COUPON: <span id="couponCode">WELCOME5</span>';
         
         const couponCode = document.getElementById("couponCode");
