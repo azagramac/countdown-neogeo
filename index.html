@@ -927,12 +927,8 @@ const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft',
 let konamiIndex = 0;
 const easterEggSound = document.getElementById("easterEggSound");
 
-document.addEventListener('keydown', (e) => {
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-        if (konamiIndex > 0) e.preventDefault();
-    }
-
-    if (e.key === konamiCode[konamiIndex] || e.key.toLowerCase() === konamiCode[konamiIndex].toLowerCase()) {
+function processKonami(key) {
+    if (key === konamiCode[konamiIndex] || key.toLowerCase() === konamiCode[konamiIndex].toLowerCase()) {
         konamiIndex++;
         if (konamiIndex === konamiCode.length) {
             foundEgg('konami');
@@ -948,7 +944,44 @@ document.addEventListener('keydown', (e) => {
     } else {
         konamiIndex = 0;
     }
+}
+
+document.addEventListener('keydown', (e) => {
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        if (konamiIndex > 0) e.preventDefault();
+    }
+    processKonami(e.key);
 });
+
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].clientX;
+    touchStartY = e.changedTouches[0].clientY;
+}, {passive: true});
+
+document.addEventListener('touchend', e => {
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    
+    const diffX = endX - touchStartX;
+    const diffY = endY - touchStartY;
+    const threshold = 40;
+
+    let key = "";
+    if (Math.abs(diffX) > threshold || Math.abs(diffY) > threshold) {
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+            key = diffX > 0 ? "ArrowRight" : "ArrowLeft";
+        } else {
+            key = diffY > 0 ? "ArrowDown" : "ArrowUp";
+        }
+    } else {
+        key = touchStartX < window.innerWidth / 2 ? "b" : "a";
+    }
+
+    if (key) processKonami(key);
+}, {passive: true});
 
 const insertCoinBtn = document.getElementById("insertCoinText");
 const creditCountDisplay = document.getElementById("creditCount");
