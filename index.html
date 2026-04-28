@@ -197,6 +197,12 @@ img {
     -moz-user-select: text;
     -ms-user-select: text;
     color: white;
+    cursor: pointer;
+    position: relative;
+}
+
+.coupon-text span:active {
+    transform: scale(0.95);
 }
 
 .link-btn {
@@ -303,28 +309,63 @@ img {
     100% { opacity: 1; }
 }
 
-.video-section {
+
+.progress-label {
+    font-size: 10px;
+    color: var(--blue);
+    text-align: right;
+    margin-bottom: 2px;
+    letter-spacing: 2px;
+    width: 100%;
+}
+
+.progress-section {
     margin-top: 35px;
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
     margin-left: auto;
     margin-right: auto;
-    border: 1px solid rgba(234, 210, 125, 0.3);
-    box-shadow: 0 0 15px rgba(234, 210, 125, 0.1);
-    border-radius: 2px;
-    overflow: hidden;
+    position: relative;
 }
 
-.video-section iframe {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    display: block;
-    opacity: 0.85;
-    transition: opacity 0.3s;
+.slug-character {
+    position: absolute;
+    bottom: 12px; /* Subido para solapar el texto y estar sobre la barra */
+    left: 0%;
+    width: 55px;
+    height: 55px;
+    background-image: url('https://www.fightersgeneration.com/nx8/char/marco-metalslug-walker.gif');
+    background-size: contain;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+    transform: translateX(-50%);
+    z-index: 100;
+    filter: drop-shadow(0 0 5px rgba(255,255,255,0.3));
+    transition: left 1s linear; /* Movimiento fluido */
 }
 
-.video-section iframe:hover {
-    opacity: 1;
+.progress-wrapper {
+    height: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    padding: 2px;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold) 0%, #fff 50%, var(--gold) 100%);
+    background-size: 200% 100%;
+    width: 0%;
+    transition: width 1s ease-out;
+    box-shadow: 0 0 15px rgba(234, 210, 125, 0.4);
+    animation: barShimmer 3s linear infinite;
+}
+
+@keyframes barShimmer {
+    0% { background-position: 200% 0%; }
+    100% { background-position: 0% 0%; }
 }
 
 @media (max-width: 768px) {
@@ -380,8 +421,14 @@ img {
             </div>
         </div>
 
-        <div class="video-section">
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/U7J0whhwi0U?si=OL0EU4I7xx4rUFjP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <div class="progress-section">
+            <div class="progress-label">
+                <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-wrapper">
+                <div id="slugCharacter" class="slug-character"></div>
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
         </div>
 
     </div>
@@ -406,6 +453,10 @@ SNK / Neo Geo trademarks © SNK Corporation. Fan project non-commercial.
 
 <audio id="coinSound" preload="auto">
     <source src="res/insert-coin.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="thankYouSound" preload="auto">
+    <source src="res/thank-you.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -496,7 +547,8 @@ logo.addEventListener("pointerdown", (e) => {
     handleTap();
 });
 
-const targetDate = new Date(2026, 10, 12, 0, 0, 0);
+const startDate = new Date(2026, 3, 16, 0, 0, 0); // April 16, 2026
+const targetDate = new Date(2026, 10, 12, 0, 0, 0); // November 12, 2026
 
 function update() {
     const now = new Date();
@@ -514,6 +566,23 @@ function update() {
     document.getElementById("hours").textContent = String(h).padStart(2,"0");
     document.getElementById("minutes").textContent = String(m).padStart(2,"0");
     document.getElementById("seconds").textContent = String(sec).padStart(2,"0");
+
+    // Update progress bar
+    const total = targetDate - startDate;
+    const elapsed = now - startDate;
+    const progress = Math.min(Math.max((elapsed / total) * 100, 0), 100);
+    
+    const progressBar = document.getElementById("progressBar");
+    const progressPercent = document.getElementById("progressPercent");
+    
+    if (progressBar) progressBar.style.width = progress + "%";
+    if (progressPercent) progressPercent.textContent = Math.floor(progress) + "%";
+
+    // Update Metal Slug character
+    const slug = document.getElementById("slugCharacter");
+    if (slug) {
+        slug.style.left = progress + "%";
+    }
 }
 
 setInterval(update, 1000);
@@ -569,7 +638,33 @@ insertCoinBtn.addEventListener("pointerdown", (e) => {
     
     // Desbloqueo del cupón a los 4 créditos
     if (credits === 4 && couponText) {
-        couponText.innerHTML = 'CUPÓN EXCLUSIVO PLAION: <span>WELCOME5</span>';
+        couponText.innerHTML = 'CUPÓN EXCLUSIVO PLAION: <span id="couponCode">WELCOME5</span>';
+        
+        // Add click to copy listener
+        const couponCode = document.getElementById("couponCode");
+        couponCode.addEventListener("click", () => {
+            const code = "WELCOME5";
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = couponCode.textContent;
+                couponCode.textContent = "COPIED!";
+                couponCode.style.color = "var(--gold)";
+                couponCode.style.borderColor = "var(--gold)";
+                
+                // Play Thank You sound
+                const thankYouSound = document.getElementById("thankYouSound");
+                if (thankYouSound) {
+                    thankYouSound.currentTime = 0;
+                    thankYouSound.volume = 1.0;
+                    thankYouSound.play().catch(() => {});
+                }
+                
+                setTimeout(() => {
+                    couponCode.textContent = originalText;
+                    couponCode.style.color = "white";
+                    couponCode.style.borderColor = "var(--blue)";
+                }, 1500);
+            });
+        });
     }
     
     // Visual Easter Egg after 4 credits (NeoGeo 4 buttons)
