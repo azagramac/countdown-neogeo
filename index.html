@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#a29061">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Countdown to the official launch of Neo Geo AES Anniversary Edition. Find all purchase links for PLAION, Amazon, and more in one place. Non-commercial fan project.">
@@ -52,6 +52,7 @@ html, body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    touch-action: none;
 }
 
 img {
@@ -959,7 +960,11 @@ let touchStartY = 0;
 document.addEventListener('touchstart', e => {
     touchStartX = e.changedTouches[0].clientX;
     touchStartY = e.changedTouches[0].clientY;
-}, {passive: true});
+}, {passive: false});
+
+document.addEventListener('touchmove', e => {
+    e.preventDefault();
+}, {passive: false});
 
 document.addEventListener('touchend', e => {
     const endX = e.changedTouches[0].clientX;
