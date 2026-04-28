@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEO GEO AES+ COUNTDOWN</title>
+<title>Neo Geo AES Anniversary Edition - COUNTDOWN</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 
@@ -89,21 +89,14 @@ img {
     height: 92px;
     z-index: 999;
     opacity: 0.92;
-    animation: moveLogo 24s linear infinite, rotateLogo 7s linear infinite;
+    animation: rotateLogo 7s linear infinite;
+    /* No transition for fluid JS movement */
     filter: drop-shadow(0 0 10px rgba(255,255,255,0.4)) drop-shadow(0 0 20px rgba(230,0,18,0.55));
     pointer-events: auto;
     touch-action: manipulation;
     cursor: pointer;
 }
 
-@keyframes moveLogo {
-    0% { top: 5%; left: 5%; }
-    20% { top: 10%; left: 85%; }
-    40% { top: 70%; left: 80%; }
-    60% { top: 85%; left: 15%; }
-    80% { top: 35%; left: 55%; }
-    100% { top: 5%; left: 5%; }
-}
 
 @keyframes rotateLogo {
     from { transform: rotate(0deg); }
@@ -408,7 +401,7 @@ img {
         <div class="footer">LAUNCH: 12 NOV 2026</div>
 
         <div class="links-section">
-            <div class="coupon-text" id="couponText"><span>LOCKED</span> INSERTA 4 MONEDAS</div>
+            <div class="coupon-text" id="couponText"><span>LOCKED</span> INSERT COINS TO UNLOCK</div>
             <div class="links-row">
                 <a href="https://plaionreplai.com/products/neogeo-aes" target="_blank" class="link-btn">NEOGEO AES (PLAION)</a>
                 <a href="https://plaionreplai.com/products/neogeo-aes-anniversary-edition" target="_blank" class="link-btn">ANNIVERSARY ED. (PLAION)</a>
@@ -547,6 +540,37 @@ logo.addEventListener("pointerdown", (e) => {
     handleTap();
 });
 
+let logoX = Math.random() * 80 + 10;
+let logoY = Math.random() * 80 + 10;
+let velX = (Math.random() - 0.5) * 0.08;
+let velY = (Math.random() - 0.5) * 0.08;
+
+function updateLogo() {
+    logoX += velX;
+    logoY += velY;
+    
+    // Borde de rebote (en %)
+    if (logoX <= 2 || logoX >= 88) {
+        velX *= -1;
+        logoX = Math.max(2, Math.min(88, logoX));
+    }
+    if (logoY <= 2 || logoY >= 88) {
+        velY *= -1;
+        logoY = Math.max(2, Math.min(88, logoY));
+    }
+    
+    // Cambio aleatorio de dirección ocasional
+    if (Math.random() < 0.002) {
+        velX = (Math.random() - 0.5) * 0.15;
+        velY = (Math.random() - 0.5) * 0.15;
+    }
+    
+    logo.style.left = logoX + "%";
+    logo.style.top = logoY + "%";
+    requestAnimationFrame(updateLogo);
+}
+updateLogo();
+
 const startDate = new Date(2026, 3, 16, 0, 0, 0); // April 16, 2026
 const targetDate = new Date(2026, 10, 12, 0, 0, 0); // November 12, 2026
 
@@ -638,7 +662,7 @@ insertCoinBtn.addEventListener("pointerdown", (e) => {
     
     // Desbloqueo del cupón a los 4 créditos
     if (credits === 4 && couponText) {
-        couponText.innerHTML = 'CUPÓN EXCLUSIVO PLAION: <span id="couponCode">WELCOME5</span>';
+        couponText.innerHTML = 'EXCLUSIVE PLAION COUPON: <span id="couponCode">WELCOME5</span>';
         
         // Add click to copy listener
         const couponCode = document.getElementById("couponCode");
