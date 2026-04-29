@@ -248,10 +248,27 @@ img {
     text-align: center;
     font-size: 7px;
     line-height: 1.4;
-    opacity: 0.4;
     z-index: 30;
     padding: 0 20px;
-    pointer-events: none;
+}
+
+.legal-footer div {
+    opacity: 0.4;
+}
+
+.source-link {
+    color: var(--gold);
+    text-decoration: none;
+    margin-top: 5px;
+    display: inline-block;
+    letter-spacing: 1px;
+    opacity: 0.4;
+    transition: all 0.3s ease;
+}
+
+.source-link:hover {
+    color: white;
+    opacity: 1;
 }
 
 
@@ -634,6 +651,7 @@ img {
 <div class="legal-footer">
     <div>SNK, Neo Geo and related trademarks are © SNK Corporation. All store links, logos and product images are copyright of their respective owners (PLAION, Amazon, etc.).</div>
     <div>This is a non-commercial fan project created to unify links and provide a countdown for the launch. No copyright infringement intended. | 2026</div>
+    <a href="https://github.com/azagramac/countdown-neogeo" target="_blank" class="source-link">SOURCE CODE</a>
 </div>
 
 <audio id="biosSound" preload="auto">
