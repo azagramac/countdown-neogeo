@@ -382,12 +382,26 @@ img {
         font-size: 11px;
     }
 
-    .arcade-hud {
-        bottom: 20px;
-        right: 20px;
+    .stats-counter {
+        top: 15px;
+        right: 15px;
+        gap: 8px;
     }
-    .insert-coin-text { font-size: 14px; }
-    .credit-counter { font-size: 12px; }
+    .stat-number { font-size: 14px; letter-spacing: 1px; }
+    .stat-label { font-size: 8px; }
+
+    .easter-egg-counter {
+        top: 15px;
+        left: 15px;
+        gap: 8px;
+    }
+    .egg-slot { width: 30px; height: 30px; }
+    .egg-slot img { width: 20px; height: 20px; }
+
+    .arcade-hud {
+        bottom: 15px;
+        right: 15px;
+    }
 }
 
 .arcade-hud {
@@ -430,15 +444,23 @@ img {
     100% { opacity: 1; }
 }
 
-.visit-counter {
+.stats-counter {
     position: absolute;
     top: 25px;
     right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
     text-align: right;
     z-index: 100;
 }
 
-.visit-label {
+.stat-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
     font-size: 10px;
     color: white;
     letter-spacing: 2px;
@@ -446,7 +468,7 @@ img {
     margin-bottom: 2px;
 }
 
-.visit-number {
+.stat-number {
     font-size: 18px;
     color: var(--gold);
     font-weight: 900;
@@ -659,6 +681,12 @@ img {
         font-size: 20px;
         letter-spacing: 2px;
     }
+    .stats-counter { top: 10px; right: 10px; }
+    .easter-egg-counter { top: 10px; left: 10px; }
+    .egg-slot { width: 24px; height: 24px; border-width: 1px; }
+    .egg-slot img { width: 16px; height: 16px; }
+    .stat-number { font-size: 12px; }
+    .container { padding: 30px 10px; }
 }
 
 
@@ -717,9 +745,15 @@ img {
         <div class="credit-counter">CREDIT <span id="creditCount">00</span></div>
     </div>
 
-    <div class="visit-counter">
-        <div class="visit-label">HI-SCORE</div>
-        <div id="visitCount" class="visit-number">000000</div>
+    <div class="stats-counter">
+        <div class="stat-box">
+            <div class="stat-label">HI-SCORE (VICTORIES)</div>
+            <div id="victoryCount" class="stat-number">000000</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">TOTAL PLAYERS</div>
+            <div id="visitCount" class="stat-number">000000</div>
+        </div>
     </div>
 
     <div class="easter-egg-counter">
@@ -1013,10 +1047,27 @@ function foundEgg(type) {
     }
 }
 
+async function incrementVictoryCounter() {
+    if (localStorage.getItem("neogeo_victory_counted")) return;
+    
+    try {
+        const response = await fetch("https://api.countapi.xyz/hit/azagramac-neogeo-victory/completions");
+        const data = await response.json();
+        if (data && data.value) {
+            document.getElementById("victoryCount").textContent = String(data.value).padStart(6, "0");
+            localStorage.setItem("neogeo_victory_counted", "true");
+        }
+    } catch (e) {
+        console.error("Error incrementing victory counter", e);
+    }
+}
+
 function checkVictory() {
     if (eggsFound.coins && eggsFound.logo && eggsFound.konami && eggsFound.marco) {
         const container = document.querySelector(".container");
         if (container) container.classList.add("victory");
+
+        incrementVictoryCounter();
 
         const overlay = document.getElementById("victoryOverlay");
         const sound = document.getElementById("missionCompleteSound");
@@ -1221,18 +1272,34 @@ insertCoinBtn.addEventListener("pointerdown", (e) => {
 });
 
 async function initCounter() {
-    const display = document.getElementById("visitCount");
-    if (!display) return;
+    const victoryDisplay = document.getElementById("victoryCount");
+    const visitDisplay = document.getElementById("visitCount");
     
+    // 1. Handle Victory Counter (Always GET only on init)
     try {
-        const response = await fetch("https://api.countapi.xyz/hit/azagramac-neogeo/visits");
+        const response = await fetch("https://api.countapi.xyz/get/azagramac-neogeo-victory/completions");
         const data = await response.json();
         if (data && data.value) {
-            display.textContent = String(data.value).padStart(6, "0");
+            victoryDisplay.textContent = String(data.value).padStart(6, "0");
         }
     } catch (e) {
-        // Fallback or just stay at 000000
-        display.textContent = "199091"; // A cool retro year number
+        victoryDisplay.textContent = "199091";
+    }
+
+    // 2. Handle Visit Counter (HIT if new session, otherwise GET)
+    try {
+        const isNewSession = !sessionStorage.getItem("neogeo_visit_counted");
+        const action = isNewSession ? "hit" : "get";
+        
+        const response = await fetch(`https://api.countapi.xyz/${action}/azagramac-neogeo/visits`);
+        const data = await response.json();
+        
+        if (data && data.value) {
+            visitDisplay.textContent = String(data.value).padStart(6, "0");
+            if (isNewSession) sessionStorage.setItem("neogeo_visit_counted", "true");
+        }
+    } catch (e) {
+        visitDisplay.textContent = "000000";
     }
 }
 
