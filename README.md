@@ -66,10 +66,9 @@ Incluye el legendario **Arcade Stick**:
 
 ## 🧩 Hardware
 
-* 🎯 Réplica 1:1 de la consola original
-* 🏗️ Construcción premium de grado arcade
+* 🎯 Réplica 1:1 de la consola original (no emulación)
 * 🔥 ASIC real rediseñado
-* 📀 Compatibilidad total con cartuchos originales y nuevos
+* 📀 Compatibilidad total con cartuchos y accesorios originales y nuevos
 
 ---
 
